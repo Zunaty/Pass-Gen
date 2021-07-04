@@ -1,4 +1,18 @@
+// This variable will hold how long the password will be
 var passLen;
+
+// These variables will hold a true or false
+var lowerConfirm;
+var upperConfirm;
+var numConfirm;
+var symConfirm;
+
+// These variables hold true or false to ensure the password has at least one of each character
+var lowerCheck;
+var upperCheck;
+var numCheck;
+var symCheck;
+
 // Array holding the alphabet
 var alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 // Array holding all possible symbols 
@@ -27,8 +41,8 @@ function passLower() {
   if(x === true) {
     var lower = alphabet.map(letters => letters.toLowerCase());
     passArray = passArray.concat(lower)
-    console.log(passArray)
   }
+  return lowerConfirm = x;
 };
 
 // This function will ask the user if they want to use upper case
@@ -36,8 +50,8 @@ function passUpper() {
   var x = confirm("Would you like to have UPPER CASE letters in your password?");
   if(x === true) {
     passArray = passArray.concat(alphabet)
-    console.log(passArray)
   }
+  return upperConfirm = x;
 };
 
 // This function will ask the user if they want to use numbers
@@ -45,8 +59,8 @@ function passNum() {
   var x = confirm("Would you like to have numbers in your password?");
   if(x === true) {
     passArray = passArray.concat(numbers)
-    console.log(passArray)
   }
+  return numConfirm = x;
 };
 
 // This function will ask the user if they want to use symbols
@@ -54,7 +68,31 @@ function passSym() {
   var x = confirm("Would you like to have symbols in your password?");
   if(x === true) {
     passArray = passArray.concat(symbol)
-    console.log(passArray)
+  }
+  return symConfirm = x;
+};
+
+// This function will check to make sure that at least one option is selected
+function falseChecker() {
+  if(lowerConfirm === false && upperConfirm === false && numConfirm === false && symConfirm === false) {
+    alert("Please pick at least one set of characters to use, try again");
+    generatePassword();
+  }
+};
+
+// Checking whether an option was selected, and then ensuring the string has that character in it
+function trueChecker(data) {
+  if(lowerConfirm === true) {
+    return lowerCheck = data.includes("abcdefghijklmnopqrstuvwxyz");
+  }
+  if(upperConfirm === true) {
+    return upperCheck = data.includes("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  }
+  if(numConfirm === true) {
+    return numCheck = data.includes("1234567890");
+  }
+  if(symConfirm === true) {
+    return symCheck = data.includes("!@#$%^&*()");
   }
 };
 
@@ -66,9 +104,21 @@ function generatePassword() {
   passUpper();
   passNum();
   passSym();
-  
+  falseChecker();
+
+  // This creates a random password with every array that was added to passArray
+  // depending on which ones they wanted to include
   while(x.length < passLen) {
-    x += passArray(Math.ceil(Math.random() * passArray.length))
+    x += passArray[Math.floor(Math.random() * passArray.length)];
+  };
+
+  trueChecker(x);
+
+  // This ensures that when all four are selected that one of each character type shows up in the password
+  if(lowerConfirm === true && upperConfirm === true && numConfirm === true && symConfirm === true){
+    while(lowerCheck === false && upperCheck === false && numCheck === false && symCheck === false) {
+      x += passArray[Math.floor(Math.random() * passArray.length)];
+    }
   }
   return x;
 };
